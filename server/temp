@@ -1,0 +1,43 @@
+FROM ubuntu
+LABEL maintainer="neelumca.1983@gmai.com"
+#initilizing dependencies
+RUN apt-get update && apt-get install wget -y
+
+
+#creating working directory
+WORKDIR /ksapp
+COPY install.sh .
+
+#installing Bash Script
+RUN ./install.sh
+
+#Set Environmant Variable 
+
+ENV JAVA_HOME=/opt/java \
+    M2_HOME=/opt/maven \
+    PATH="/opt/java/bin:/opt/maven/bin:${PATH}"
+
+
+    <server>
+      <id>deploymentRepo</id>
+      <username>repouser</username>
+      <password>repopwd</password>
+    </server>
+
+FROM neelumca/jdk17_online:v1.0
+
+#initilizing dependencies
+COPY /src  ./src
+COPY pom.xml .
+RUN rm -rf install.sh
+
+# Build Mvn
+RUN mvn install deploy
+
+git
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/neelumca/neeluk8srepo.git
+git push -u origin main

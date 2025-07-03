@@ -59,8 +59,15 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+	
 	</dependencies>
-
+	<distributionManagement>
+		<snapshotRepository>    
+			<id>deployment</id>
+			<name>snapshots</name>
+			<url>http://172.17.174.35:8081/repository/service1/</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>

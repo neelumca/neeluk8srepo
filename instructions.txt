@@ -1,0 +1,150 @@
+	
+	git clone https://github.com/ksrepo9/ksk8spro.git
+	cp ksk8spro/server/ . -r
+	
+	
+    Maria DB
+	yum install mariadb mariadb-server -y ---- db
+	systemctl start mariadb
+	systemctl status mariadb
+	mysql ------ to enter into DB
+	create database ksdb;
+	show databases;
+	use ksdb;
+	ksdb --> we have created ksdb database bcoz in the db code ksdb database is mentioned.
+	grant all privileges on ksdb.* to 'admin'@104.154.100.11 identified by 'Admin@123'; -->service1
+	grant all privileges on ksdb.* to 'admin'@34.59.170.141 identified by 'Admin@123'; ==> service2
+
+	
+	Server
+	JDK	
+	sudo yum install wget -y
+	wget https://download.oracle.com/java/17/archive/jdk-17.0.12_linux-x64_bin.tar.gz
+	tar -xvf jdk-17.0.12_linux-x64_bin.tar.gz
+	
+	maven
+	wget https://dlcdn.apache.org/maven/maven-3/3.9.10/binaries/apache-maven-3.9.10-bin.tar.gz
+	tar -xvf apache-maven-3.9.10-bin.tar.gz
+	
+	setting path
+	vim /etc/profile.d/path.sh
+	export JAVA_HOME=/opt/jdk-17.0.12
+	export PATH=/opt/jdk-17.0.12/bin:${PATH}
+	export M2_HOME=/opt/apache-maven-3.9.10
+	export PATH=/opt/apache-maven-3.9.10/bin:${PATH}
+	
+	path.sh ---> this is the file we are creating and setting path in this
+
+    for rebooting --> source /etc/profile
+	loading --> exec bash
+	
+	start eureka server
+	mvn install
+	it will create target folder under server folder
+	under target folder we will have jar file -- > server-0.0.1-SNAPSHOT.jar
+	run this jar file to run eureka server
+	java -jar server-0.0.1-SNAPSHOT.jar
+	
+	start service1
+	change application.properties under resources to your DB ip address and application.yml -- your eureka ip adddress
+	mvn install will create .jar file
+	under target folder we will have jar file -- > server-0.0.1-SNAPSHOT.jar
+	run this jar file to run eureka server
+	java -jar server-0.0.1-SNAPSHOT.jar
+	
+	start service2
+	change application.properties under resources to your DB ip address and application.yml -- your eureka ip adddress
+	mvn install will create .jar file
+	under target folder we will have jar file -- > server-0.0.1-SNAPSHOT.jar
+	run this jar file to run eureka server
+	java -jar server-0.0.1-SNAPSHOT.jar
+
+	Docker file
+	1. create base image with dependencies like java and maven and then push to doctor hub with neelumca/jdk17_online:v1.0
+		FROM ubuntu
+		LABEL maintainer="neelumca.1983@gmail.com"
+		#initilizing dependencies
+		RUN apt-get update && apt-get install wget -y
+		#Set Environmant Variable 
+
+		ENV JAVA_HOME=/opt/java \
+			M2_HOME=/opt/maven \
+			PATH="/opt/java/bin:/opt/maven/bin:${PATH}"
+		#creating working directory
+		WORKDIR /ksapp
+		COPY install.sh .
+
+	2. From new image from docker hub create a new image in docker file
+	   FROM neelumca/jdk17_online:v1.0
+
+		#initilizing dependencies
+		COPY /src  ./src
+		COPY pom.xml .
+		RUN rm -rf install.sh
+
+		# Build Mvn
+		RUN mvn  install deploy
+	3. Before running this we need to set 3 things
+	   1. application.properties - > set db url
+	   2. pom.xml -> update dependency -> under that copy url of nexus service2 link and update here
+	   <distributionManagement>
+		<snapshotRepository>    
+			<id>deployment</id>
+			<name>snapshots</name>
+			<url>http://172.17.174.35:8081/repository/service2/</url>
+		</snapshotRepository>
+		</distributionManagement> 
+		3. need to authorize to nexus in settings file which exists in container /opt/maven/conf/settings.xml.This is updated in install.sh file
+		
+		#installing Bash Script
+		RUN ./install.sh
+
+		install.sh file
+		#!/bin/bash
+
+		JDK=https://download.oracle.com/java/17/archive/jdk-17.0.12_linux-x64_bin.tar.gz
+		MAVEN=https://dlcdn.apache.org/maven/maven-3/3.9.10/binaries/apache-maven-3.9.10-bin.tar.gz
+
+		JDK_TAR=/opt/jdk-17.0.12_linux-x64_bin.tar.gz
+		MAVEN_TAR=/opt/apache-maven-3.9.10-bin.tar.gz
+		JDK_SRC=jdk-17.0.12
+		MAVEN_SRC=apache-maven-3.9.10
+
+		VAL() 
+		{
+			if [ $1 -eq 0 ]; then
+				echo "$2 ..... Success"
+			else
+				echo "$2 ...... Failed"
+				exit 1
+			fi
+		}
+
+
+		echo "Downloading JDK"
+		cd /opt
+		wget $JDK
+		tar -xvf $JDK_TAR
+		mv $JDK_SRC java
+		rm -rf $JDK_TAR
+
+		VAL $? "JDK Download"
+
+		echo "Downloading Maven"
+		cd /opt
+		wget $MAVEN
+		tar -xvf $MAVEN_TAR
+		mv $MAVEN_SRC maven
+		rm -rf $MAVEN_TAR
+
+		VAL $? "Maven Download"
+
+		sed -i '
+		/<servers>/{
+			a\
+			<server>\
+			<id>deployment</id>\
+			<username>admin</username>\
+			<password>1234</password>\
+			</server>
+		}' /opt/maven/conf/settings.xml

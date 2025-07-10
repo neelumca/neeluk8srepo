@@ -34,10 +34,20 @@ RUN rm -rf install.sh
 # Build Mvn
 RUN mvn install deploy
 
-git
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/neelumca/neeluk8srepo.git
-git push -u origin main
+FROM ubuntu
+LABEL maintainer="neelumca.1983@gmai.com"
+#initilizing dependencies
+RUN apt-get update && apt-get install wget -y
+
+
+#creating working directory
+WORKDIR /ksapp
+COPY install1.sh .
+
+#installing Bash Script
+RUN ./install1.sh
+RUN rm -rf install1.sh
+#Set Environmant Variable 
+
+ENV JAVA_HOME=/opt/java \
+    PATH="/opt/java/bin:${PATH}"

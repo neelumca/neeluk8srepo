@@ -1,0 +1,32 @@
+instal git s/w
+git clone https://github.com/ksrepo9/ksk8spro.git - for cloning the data from remote repo to local repo
+in your computer open gitbash in your git working directory
+first command to start is initializing git 
+git init -> to initialize git
+work dir - > staging area -> local repo - > remote repo
+if we commit we can commit all files from staging to local repo. 
+if we have 100 files in work dir and main files are 20 files then you can send 20 files to staging area.
+with commmit command we can send 20 files to local repo
+git add filename or if we want all files to move to staging from work dir then
+git add .
+now all files are moved to staging.
+if we want to know status
+git status
+git commit -m "" to commit file to local repo (m - modified)
+git branch
+will display all branches like master/main/branches
+git checkout branchname - > it will switch to branchname from master
+git checkout master  -  > will switch from branch to master
+git merge - > switch to master and then merge branches to master
+git checkout master
+git merge branchname
+all branch files will be merged to master.
+git log
+if we remive any files or modify any files then we need to move those to stage arean and need to commit,
+otherwise you will not able to view the changes
+git add .
+git commit -m ""
+git branch -d branchname --> delete branches
+git branch --merged ---> displays the folders which were merged
+git branch --no-merged  -----> displays the folders which were not - merged
+

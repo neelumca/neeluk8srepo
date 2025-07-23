@@ -6,4 +6,4 @@ RUN cd /ksapp/neeluk8srepo/service1 && mvn install deploy
 FROM neelumca/jdk17:latest
 COPY --from=builder /ksapp/neeluk8srepo/service1/target/*.jar neelumcaservice1.jar
 EXPOSE 9001
-ENTRYPOINT [ "java","-jar","neelumcaservice1.jar" ]
+ENTRYPOINT [ "java","-jar","neelumcaservice1.jar"]

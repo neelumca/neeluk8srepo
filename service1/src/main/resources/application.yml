@@ -1,7 +1,7 @@
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://172.17.174.35:32771/eureka/
+      defaultZone: http://172.17.174.35:32768/eureka/
 
 #
 #spring:

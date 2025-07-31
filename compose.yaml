@@ -1,0 +1,29 @@
+services:
+  db:
+    build :
+      context : ./Docker/DB
+    image : neelumca/needb
+    container_name : needbs
+    ports:
+    - 3306:3306
+  server:
+    build :
+      context : ./Docker/server
+    image : neelumca/neeserver
+    container_name : neeserver
+    ports:
+    - 8761:8761
+  service1:
+    build :
+      context : ./Docker/service1
+    image : neelumca/neeser1
+    container_name : neeser1
+    ports:
+    - 9001:9001
+  service2:
+    build :
+      context : ./Docker/service2
+    image : neelumca/neeser2
+    container_name : neeser2
+    ports:
+    - 9002:9002

@@ -148,3 +148,12 @@
 			<password>1234</password>\
 			</server>
 		}' /opt/maven/conf/settings.xml
+
+		docker compose build -> to build the image
+		docker compose up -d -> it will up the container in dettached mode.
+		whenever we run compose command a network adopter will get generated
+		docker network ls --> shows all network id's that got created
+		docker run -it --network ksk8spro_default busybox --> network name and image name.
+		This will run your container built on image busybox in specified network
+		docker compose up top - > will indicate the performance of the containers
+		

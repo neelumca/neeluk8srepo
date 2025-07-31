@@ -20,6 +20,9 @@ services:
     container_name : neeser1
     ports:
     - 9001:9001
+    depends_on:
+    - db
+    - server
   service2:
     build :
       context : ./Docker/service2
@@ -27,3 +30,6 @@ services:
     container_name : neeser2
     ports:
     - 9002:9002
+    depends_on:
+    - db
+    - server

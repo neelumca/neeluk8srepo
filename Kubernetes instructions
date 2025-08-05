@@ -1,0 +1,36 @@
+Master Node
+Kubectl, kubelet, kubeadm
+Docker
+kubeadm init ----> means master node
+Worker Node
+Kubectl, kubelet, kubeadm
+Docker
+Joint Token
+
+Master Node
+APi server - instructions are recieved by api server. it is the center for all components for communication means etcd gives info to api server , scheduler gives info to api server and api server give info to controller manager and so on.
+Scheduler - it schedules pods in respective nodes based on info that comes from contoller manager and etcd
+controller manager - it has worker nodes info like which node is up and dowwn, which node has more compute 
+etcd - it is a database and it has info in key value pair.it is also known as cluster store. it will have confif files too
+
+Worker Node
+kubelet - it activate containers in nodes in the form of pods
+kube proxy - if we want to apply any n/w or internet related changes then we can use kube proxy
+
+Cluster - it is a combination of n number of master and worker nodes. It will be partitioned logically as DEv | test | QA
+through namespaces concept.
+
+instruction - > apiserver - > controller manager -- > api server -> etcd - > api server - > scheduler - > api server - > kubelet
+
+in git bash - > create a dir to store key pair to access the gcp vm
+ssh-keygen -f k8s - > it will generate key pair - > key name is k8s
+enter and enter then key will be generated inthe form of sha256 
+you will have 2 keys one is private and the other is public
+k8s -> private  k8s.pub -> public
+for private key there will be no . extension so need to update . extension particularly .pem by below command
+mv k8s k8s.pem
+need to copy public key and paste it in cloud metadata.
+cat k8s.pub -> it will give key. copy that key
+ssh -i k8s.pem k8s@34.68.82.147 -> by using this you can connect you cloud vm in local git bash. k8s.pem -> private key
+k8s - > username you have defined in metadata. 34.68.82.147 - > external ip of the vm.
+
